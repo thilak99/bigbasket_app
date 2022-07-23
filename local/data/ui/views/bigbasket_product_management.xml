@@ -1,0 +1,217 @@
+<dashboard theme="dark">
+  <label>Bigbasket Product Management Dashboard</label>
+  <description>you can get product data list ....</description>
+  <row>
+    <panel>
+      <title>Total count of Brands-</title>
+      <single>
+        <search>
+          <query>index="bigbasket_product_list" 
+| stats count by brand 
+|stats count</query>
+          <earliest>0</earliest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">50</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Total Count of Product</title>
+      <single>
+        <search>
+          <query>index="bigbasket_product_list" 
+| stats count by product 
+|stats count</query>
+          <earliest>0</earliest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">60</option>
+      </single>
+    </panel>
+    <panel>
+      <title>Total count of Category</title>
+      <single>
+        <search>
+          <query>index="bigbasket_product_list" 
+| stats count by category | stats count</query>
+          <earliest>0</earliest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">50</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>product under each category</title>
+      <chart>
+        <search>
+          <query>index="bigbasket_product_list" 
+| stats count(product) by category</query>
+          <earliest>0</earliest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.drilldown">none</option>
+        <option name="height">153</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>sub category in category</title>
+      <chart>
+        <search>
+          <query>index="bigbasket_product_list" 
+| stats  dc(sub_category) as sub_category by category</query>
+          <earliest>0</earliest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.drilldown">none</option>
+        <option name="height">155</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Highest product category</title>
+      <single>
+        <search>
+          <query>index="bigbasket_product_list" 
+| stats count by category |sort - count| head 1</query>
+          <earliest>0</earliest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="height">50</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051", "0x0877a6", "0xf8be34", "0xf1813f", "0xdc4e41"]</option>
+        <option name="rangeValues">[0,30,70,100]</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">0</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+    <panel>
+      <title>lowest product category</title>
+      <single>
+        <search>
+          <query>index="bigbasket_product_list" 
+| stats count by category |sort count| head 1</query>
+          <earliest>0</earliest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="height">50</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051", "0x0877a6", "0xf8be34", "0xf1813f", "0xdc4e41"]</option>
+        <option name="rangeValues">[0,30,70,100]</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">0</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>product counts by sale price ranges</title>
+      <table>
+        <search>
+          <query>index="bigbasket_product_list" 
+| eval range =if(sale_price&gt;0 and sale_price&lt;=100,"0-100",if(sale_price&gt;100 and sale_price&lt;=200,"100-200",if(sale_price&gt;200 and sale_price&lt;=300,"200-300",if(sale_price&gt;300 and sale_price&lt;=400,"300-400",if(sale_price&gt;400 and sale_price&lt;=500,"400-500",if(sale_price&gt;500,"500-∞","negative"))))))
+| table * 
+| stats count by range</query>
+          <earliest>0</earliest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="count">
+          <colorPalette type="minMidMax" maxColor="#53A051" minColor="#FFFFFF"></colorPalette>
+          <scale type="minMidMax"></scale>
+        </format>
+      </table>
+    </panel>
+    <panel>
+      <title>product ratings</title>
+      <table>
+        <search>
+          <query>index="bigbasket_product_list" 
+| eval rating =if(rating&gt;0 and rating&lt;=1,"0-1",if(rating&gt;1 and rating&lt;=2,"1-2",if(rating&gt;2 and rating&lt;=3,"2-3",if(rating&gt;3 and rating&lt;=4,"3-4",if(rating&gt;4 and rating&lt;=5,"4-5",if(rating&gt;5,"5-∞","5-∞")))))) 
+| table * 
+|stats count by rating</query>
+          <earliest>0</earliest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="count">
+          <colorPalette type="minMidMax" maxColor="#006D9C" minColor="#DC4E41"></colorPalette>
+          <scale type="minMidMax"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>No of product count under 100 ruppes</title>
+      <single>
+        <search>
+          <query>index="bigbasket_product_list" 
+| eval range =if(sale_price&gt;0 and sale_price&lt;=100,"0-100",if(sale_price&gt;100 and sale_price&lt;=200,"100-200",if(sale_price&gt;200 and sale_price&lt;=300,"200-300",if(sale_price&gt;300 and sale_price&lt;=400,"300-400",if(sale_price&gt;400 and sale_price&lt;=500,"400-500",if(sale_price&gt;500,"500-∞","negative"))))))
+| table * 
+| stats count by range |head 1|fields - range</query>
+          <earliest>0</earliest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x53a051", "0x0877a6", "0xf8be34", "0xf1813f", "0xdc4e41"]</option>
+        <option name="rangeValues">[0,30,70,100]</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">0</option>
+        <option name="useThousandSeparators">1</option>
+      </single>
+    </panel>
+  </row>
+</dashboard>
